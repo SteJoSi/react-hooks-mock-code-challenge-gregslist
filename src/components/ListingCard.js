@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function ListingCard({ listing }) {
+function ListingCard({ listing, onDeleteListing }) {
   const [starClick, setStarClick] = useState(false)
 
   function handleStarClick() {
@@ -9,12 +9,17 @@ function ListingCard({ listing }) {
 
   const activeStar= <button className="emoji-button favorite active">★</button>
   const deactivateStar= <button className="emoji-button favorite">☆</button>
-  
-  {/* {true ? (
-          <button className="emoji-button favorite active">★</button>
-        ) : (
-          <button className="emoji-button favorite">☆</button>
-        )} */}
+
+
+  function handleDelete() {
+    fetch(`http://localhost:6001/listings/${listing.id}`, {
+      method: "DELETE",
+    })
+    .then(resp => resp.json())
+    .then((listing) => onDeleteListing(listing))
+  }
+
+  console.log("delete", listing)
 
   return (
     <li className="card" key={listing.id}>
@@ -24,10 +29,9 @@ function ListingCard({ listing }) {
       </div>
       <div className="details" onClick={handleStarClick}>
         {starClick ? activeStar : deactivateStar}
-      
         <strong>{listing.description}</strong>
         <span> · {listing.location}</span>
-        <button className="emoji-button delete">🗑</button>
+        <button className="emoji-button delete" onClick={handleDelete}>🗑</button>
       </div>
     </li>
   );
